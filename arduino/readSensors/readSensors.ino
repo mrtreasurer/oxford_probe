@@ -1,6 +1,5 @@
 #define sgn(x) ((x) < 0 ? -1 : ((x) > 0 ? 1 : 0))
 
-int nSensors = 5;
 int Probe1[5] = {A0, A1, A2, A3, A4};
 // int Probe2[5] = {A5,A6,A7,A8,A9};//{A8,A9,A10,A11,A12};
 int vdd = 1020*5;
@@ -15,11 +14,6 @@ void setup(){
 void loop(){
   //LogServo();
   LogOxford(Probe1, 0);
-  // Serial.print(" , ");
-  //LogOxford(Probe2,5,0); 
-  //LogAbsP(A7);
-  //Serial.print(" , ");
-  //LogAbsP(A6);
   
   Serial.println();
   delay(9);
@@ -33,7 +27,7 @@ void loop(){
 void LogOxford(int data[], int OCS){
   int data_len = sizeof(data);
 
-  for (int i = 0; i < data_len; i++){
+  for (int i = 0; i <= data_len; i++){
     int ar = analogRead(data[i]);
 
     switch (OCS) {
@@ -54,7 +48,7 @@ void LogOxford(int data[], int OCS){
         break;
     }
     
-    if (i < data_len - 1){
+    if (i < data_len){
       Serial.print(", ");
     }
   }
