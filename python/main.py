@@ -11,37 +11,44 @@ if __name__ == "__main__":
     if not data_path.exists():
         data_path.mkdir()
 
-    ports = ["COM5"]
-    names = ["probe1"]
+    ports = ["COM6"]
 
     arduinos = list()
     files = list()
-    writers = list()
+    data_lists = list()
 
-    for p, n in zip(ports, names):
-        arduino = serial.Serial(port=p, baudrate=57600, timeout=.1)
+    for p in ports:
+        arduino = serial.Serial(port=p, baudrate=57600, timeout=1)
         arduinos.append(arduino)
-        
-        filename_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M")
-        filename = data_path / f"{filename_time}_{n}.csv"
-        
-        f = open(filename, "w", newline="")
 
-        files.append(f)
-        writers.append(csv.writer(f))
+        data_lists.append(list())
+        
+        filename_time = datetime.strftime(datetime.now(), "%Y%m%d-%H%M%S")
+        filename = data_path / f"{filename_time}_{p}.csv"
+        
+        files.append(filename)
 
         arduino.flush()
         arduino.readline()
 
     try:
         while True:
-            for arduino, csv_writer in zip(arduinos, writers):
+            for arduino, data_list in zip(arduinos, data_lists):
                 line = arduino.readline()
-                print(line)
-                line = line.decode()
-                lst = [time.time()] + [int(b) for b in line.split(",")]
-                csv_writer.writerow(lst)
+                # print(line)
+
+                try:
+                    line = line.decode()
+                    lst = [time.time()] + [int(b) for b in line.split(",")]
+
+                except ValueError:
+                    print("blah")
+
+                else:
+                    data_list.append(lst)
 
     except KeyboardInterrupt:
-        for f in files:
-            f.close()
+        for fl, data_list in zip(files, data_lists):
+            with open(fl, "w", newline="") as f:
+                csv_writer = csv.writer(f)
+                csv_writer.writerows(data_list)
