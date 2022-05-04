@@ -11,7 +11,7 @@ if __name__ == "__main__":
     if not data_path.exists():
         data_path.mkdir()
 
-    ports = ["COM6"]
+    ports = ["COM7"]
 
     arduinos = list()
     files = list()
@@ -31,8 +31,12 @@ if __name__ == "__main__":
         arduino.flush()
         arduino.readline()
 
+    t0 = time.time()
+    t_run = 60
+    t_end = t0 + t_run
+    
     try:
-        while True:
+        while time.time() < t_end:
             for arduino, data_list in zip(arduinos, data_lists):
                 line = arduino.readline()
                 # print(line)
@@ -42,13 +46,15 @@ if __name__ == "__main__":
                     lst = [time.time()] + [int(b) for b in line.split(",")]
 
                 except ValueError:
-                    print("blah")
+                    print(line)
 
                 else:
                     data_list.append(lst)
 
     except KeyboardInterrupt:
-        for fl, data_list in zip(files, data_lists):
-            with open(fl, "w", newline="") as f:
-                csv_writer = csv.writer(f)
-                csv_writer.writerows(data_list)
+        pass
+
+    for fl, data_list in zip(files, data_lists):
+        with open(fl, "w", newline="") as f:
+            csv_writer = csv.writer(f)
+            csv_writer.writerows(data_list)
