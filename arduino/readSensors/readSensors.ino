@@ -16,7 +16,7 @@ void loop(){
   LogOxford(Probe1, 0);
   
   Serial.println();
-  delay(9);
+//  delay(5);
 }
 
 //LogOxfordprobe(DataPinArray[], amount of connected sensors, OCS configuration)
