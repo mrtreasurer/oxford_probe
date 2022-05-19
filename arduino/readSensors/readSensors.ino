@@ -2,7 +2,7 @@
 
 int Probe1[5] = {A0, A1, A2, A3, A4};
 // int Probe2[5] = {A5,A6,A7,A8,A9};//{A8,A9,A10,A11,A12};
-int vdd = 1020*5;
+int vdd = 6825;
 int vdd5 = 1020*5;
 
 void setup(){
@@ -14,9 +14,8 @@ void setup(){
 void loop(){
   //LogServo();
   LogOxford(Probe1, 0);
-  
   Serial.println();
-//  delay(5);
+  delay(5);
 }
 
 //LogOxfordprobe(DataPinArray[], amount of connected sensors, OCS configuration)
@@ -26,32 +25,33 @@ void loop(){
 
 void LogOxford(int data[], int OCS){
   int data_len = sizeof(data);
-
+  String dataline ="";
   for (int i = 0; i <= data_len; i++){
-    int ar = analogRead(data[i]);
-
+    float ar = analogRead(data[i]);
+    
     switch (OCS) {
       case 0:
-        Serial.print(ar);
+        dataline += ar;
         break;
       
       case 1:
-        Serial.print(OCSlin(ar));
+        dataline += OCSlin(ar);
         break;
 
       case 2:
-        Serial.print(OCSsqrt(ar));
+        dataline += OCSsqrt(ar);
         break;
 
       case 3:
-        Serial.print(windSpeed(ar));
+        dataline += windSpeed(ar);
         break;
     }
     
     if (i < data_len){
-      Serial.print(", ");
+      dataline += ", ";
     }
   }
+  Serial.println(dataline);
 }
 
 //Analog read int the linear OCS config
