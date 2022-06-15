@@ -42,11 +42,14 @@ if __name__ == "__main__":
                 # print(line)
 
                 try:
-                    line = line.decode()
-                    lst = [time.time()] + [int(b) for b in line.split(",")]
+                    line = line.decode().strip()
+                    lst = [int(b.split(":")[1]) for b in line.split("\t")]
+                    # lst = [time.time()] + lst
+                    lst = lst[-1:] + lst[:-1]
 
                 except ValueError:
                     print(line)
+                    raise
 
                 else:
                     data_list.append(lst)
